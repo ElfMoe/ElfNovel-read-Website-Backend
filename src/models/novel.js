@@ -35,6 +35,12 @@ const novelSchema = new mongoose.Schema({
         default: '/images/default-cover.jpg' // 默认封面路径
     },
     
+    // Cloudinary中的图片ID
+    coverPublicId: {
+        type: String,
+        default: ''
+    },
+    
     // 封面模板设置
     coverTemplate: {
         type: Number,

@@ -89,7 +89,8 @@ const sendVerificationEmail = async (email, verificationToken, username) => {
         }
     
         // 修改验证链接为前端验证页面
-        const verificationUrl = `http://localhost:3000/verify?token=${verificationToken}`;
+        const frontendUrl = process.env.FRONTEND_URL || 'https://novel-reading-frontend.vercel.app/';
+        const verificationUrl = `${frontendUrl}/verify?token=${verificationToken}`;
         
         const mailOptions = {
             from: process.env.EMAIL_USERNAME,

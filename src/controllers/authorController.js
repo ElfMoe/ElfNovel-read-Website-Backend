@@ -1,5 +1,6 @@
 import { Novel, Chapter, User } from '../models/index.js';
 import mongoose from 'mongoose';
+import { uploadToCloudinary } from '../utils/cloudinaryUpload.js';
 
 /**
  * 作者控制器 - 处理作者相关的API请求
@@ -848,11 +849,26 @@ export const uploadNovelCover = async (req, res) => {
             });
         }
         
-        // 构建文件URL路径
-        const coverPath = `/uploads/${req.file.filename}`;
+        console.log('上传文件信息:', req.file);
+        
+        // 上传到Cloudinary
+        const cloudinaryResult = await uploadToCloudinary(req.file.path, 'novel-covers');
+        
+        if (!cloudinaryResult.success) {
+            return res.status(500).json({
+                success: false,
+                message: '封面上传失败: ' + cloudinaryResult.error
+            });
+        }
+        
+        console.log('Cloudinary上传结果:', cloudinaryResult);
+        
+        // 保存旧封面的public_id用于可能的删除
+        const oldCoverPublicId = novel.coverPublicId;
         
         // 更新小说封面信息
-        novel.cover = coverPath;
+        novel.cover = cloudinaryResult.url;
+        novel.coverPublicId = cloudinaryResult.public_id;
         novel.useCustomCover = true;
         
         await novel.save();
