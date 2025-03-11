@@ -3,40 +3,41 @@ import path from 'path';
 import fs from 'fs';
 
 // 确保上传目录存在
-const uploadDir = path.join(process.cwd(), 'public', 'uploads');
+const uploadDir = path.join(process.cwd(), 'public/uploads');
 if (!fs.existsSync(uploadDir)) {
     fs.mkdirSync(uploadDir, { recursive: true });
 }
 
-// 设置存储引擎
+// 配置存储
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
         cb(null, uploadDir);
     },
     filename: function (req, file, cb) {
-        // 生成唯一文件名，避免覆盖
+        // 生成文件名
         const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-        const ext = path.extname(file.originalname);
-        cb(null, 'cover-' + uniqueSuffix + ext);
+        cb(null, file.fieldname + '-' + uniqueSuffix + path.extname(file.originalname));
     }
 });
 
-// 文件过滤器，只允许图片
+// 文件过滤器
 const fileFilter = (req, file, cb) => {
-    // 检查是否为图片
-    if (file.mimetype.startsWith('image/')) {
+    // 允许的文件类型
+    const allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+    
+    if (allowedTypes.includes(file.mimetype)) {
         cb(null, true);
     } else {
-        cb(new Error('只允许上传图片文件！'), false);
+        cb(new Error('不支持的文件类型。只允许 JPG, PNG, GIF 和 WebP 格式。'), false);
     }
 };
 
 // 创建multer实例
-const upload = multer({ 
+const upload = multer({
     storage: storage,
     fileFilter: fileFilter,
     limits: {
-        fileSize: 10 * 1024 * 1024 // 限制10MB
+        fileSize: 5 * 1024 * 1024, // 限制5MB
     }
 });
 
@@ -53,7 +54,7 @@ export const handleUploadError = (err, req, res, next) => {
         if (err.code === 'LIMIT_FILE_SIZE') {
             return res.status(400).json({
                 success: false,
-                message: '文件大小不能超过10MB'
+                message: '文件大小不能超过5MB'
             });
         }
         return res.status(400).json({
@@ -68,4 +69,6 @@ export const handleUploadError = (err, req, res, next) => {
         });
     }
     next();
-}; 
+};
+
+export default upload; 

@@ -6,6 +6,7 @@
   "scripts": {
     "start": "node src/index.js",
     "dev": "nodemon src/index.js",
+    "postinstall": "node -e \"const fs=require('fs');['public','public/uploads','public/images','public/templates'].forEach(dir=>{if(!fs.existsSync(dir)){fs.mkdirSync(dir,{recursive:true});console.log('Created dir:',dir);}})\"",
     "cleanup": "node src/utils/cleanupUsers.js"
   },
   "keywords": [],
