@@ -28,27 +28,43 @@ const allowedOrigins = [
     'http://localhost:3000',
     'http://localhost:3001',
     'http://127.0.0.1:3000',
-    'http://127.0.0.1:3001'
+    'http://127.0.0.1:3001',
+    'https://novel-reading-frontend.vercel.app'  // Vercel域名
 ];
 
 app.use(cors({
     origin: function(origin, callback) {
+        console.log('请求源:', origin); // 添加调试日志
         // 允许没有origin的请求（如移动应用或curl等工具）
         if (!origin) return callback(null, true);
         
-        // 在开发环境中，可以允许所有源
-        // 在生产环境中应该移除这一行
-        return callback(null, origin);
+        // 开发环境允许所有源
+        if (process.env.NODE_ENV === 'development') {
+            return callback(null, true);
+        }
+        
+        // 检查origin是否在允许列表中
+        if (allowedOrigins.indexOf(origin) !== -1) {
+            callback(null, true);
+        } else {
+            console.log('CORS错误：不允许的源', origin); // 添加调试日志
+            callback(new Error('Not allowed by CORS'));
+        }
     },
-    credentials: true, // 允许跨域请求带上凭据
+    credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization']
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
 }));
 
 // 设置响应头，确保凭据可以正确传递
 app.use((req, res, next) => {
-    // 确保Access-Control-Allow-Credentials存在于所有响应中
+    const origin = req.headers.origin;
+    if (allowedOrigins.includes(origin) || process.env.NODE_ENV === 'development') {
+        res.header('Access-Control-Allow-Origin', origin);
+    }
     res.header('Access-Control-Allow-Credentials', 'true');
+    res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+    res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With');
     next();
 });
 
