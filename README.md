@@ -1,5 +1,13 @@
 # Novel Reading Platform - Backend
 
+## 🔗 Related Repositories
+- **Frontend Repository**: [novel-reading-frontend](https://github.com/CJ020328/novel-reading-frontend)
+
+## 🌍 Live Demo
+- **Frontend (User Interface)**: [https://novel-reading-frontend.vercel.app/]
+- **Backend (API Server)**: [https://novel-reading-website-backend.onrender.com/]
+
+
 ## Overview
 This is the backend service for a novel reading platform, a personal side project that demonstrates modern Node.js development practices and architectural patterns. Built with Express.js and MongoDB, it implements a robust RESTful API that handles user authentication, content management, and real-time interactions.
 
@@ -170,6 +178,13 @@ CLOUDINARY_API_SECRET=your-api-secret
 ---
 
 # 小说阅读平台 - 后端
+
+## 🔗 相关仓库
+- **前端仓库**: [novel-reading-frontend](https://github.com/CJ020328/novel-reading-frontend)
+
+## 🌍 在线访问
+- **前端（用户界面）**: [https://novel-reading-frontend.vercel.app/]
+- **后端（API 服务器）**: [https://novel-reading-website-backend.onrender.com/]
 
 ## 概述
 这是小说阅读平台的后端服务，作为个人项目展示了现代Node.js开发实践和架构模式。使用Express.js和MongoDB构建，实现了一个强大的RESTful API，处理用户认证、内容管理和实时交互。
